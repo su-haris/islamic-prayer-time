@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamic Prayer Times</title>
+    <!-- Pico CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/picocss/1.5.10/pico.min.css">
+    <style>
+        :root {
+            --primary: #3949ab;
+            --primary-hover: #303f9f;
+            --primary-focus: rgba(57, 73, 171, 0.125);
+            --primary-inverse: #FFF;
+        }
+
+        /* Custom theming with Pico CSS */
+        [data-theme="dark"] {
+            --background-color: #1a222c;
+            --card-background-color: #21293b;
+            --color: #fff;
+            --card-sectionning-background-color: #fbfbfc;
+            --card-box-shadow: 0 0.125rem 1rem rgba(27, 40, 50, 0.04),
+                               0 0.125rem 2rem rgba(27, 40, 50, 0.08),
+                               0 0 0 0.0625rem rgba(27, 40, 50, 0.024);
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: #1a222c;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: -1;
+        }
+
+        .container {
+            padding: 1rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        article {
+            margin: 0;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            background-color: var(--card-background-color);
+            box-shadow: var(--card-box-shadow);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .location-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .location-display {
+            padding: 0.5rem 1rem;
+            background-color: var(--card-sectionning-background-color);
+            border-radius: 0.5rem;
+            color: var(--primary);
+            font-weight: 500;
+            text-align: center;
+            flex: 1;
+            margin: 0 auto;
+        }
+
+        .location-form {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .date-container {
+            text-align: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: var(--card-sectionning-background-color);
+            border-radius: 0.5rem;
+        }
+
+        .hijri-date {
+            color: var(--primary);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            text-align: center;
+            margin: 1rem 0;
+            font-style: italic;
+            color: var(--muted-color);
+        }
+
+        .prayer-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+            flex: 1;
+        }
+
+        .prayer-card {
+            padding: 1.5rem 1rem;
+            background-color: var(--card-sectionning-background-color);
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.5rem rgba(27, 40, 50, 0.04);
+            transition: all 0.2s ease;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .prayer-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.125rem 1rem rgba(27, 40, 50, 0.08);
+        }
+
+        .prayer-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .prayer-time {
+            font-size: 1.5rem;
+            color: var(--color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 0.75rem 0;
+            opacity: 0.7;
+            font-size: 0.85rem;
+        }
+
+        /* Make form inputs more compact */
+        .location-form input,
+        .location-form select,
+        .location-form button {
+            margin: 0;
+            padding: 0.5rem 1rem;
+        }
+
+        @media (max-width: 992px) {
+            .prayer-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            article {
+                padding: 1rem;
+            }
+
+            .location-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .location-form {
+                width: 100%;
+            }
+
+            .location-form input,
+            .location-form select,
+            .location-form button {
+                width: 100%;
+            }
+            
+            .prayer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <header>
+            <h1>Islamic Prayer Times</h1>
+        </header>
+
+        <article>
+            <div class="location-container">
+                <div class="location-display" id="location-display">Detecting Your Location</div>
+            </div>
+            
+            <div class="location-form">
+                <input type="text" id="city-input" placeholder="Enter city" aria-label="City">
+                <select id="country-select" aria-label="Country">
+                    <option value="">Select country</option>
+                </select>
+                <button id="search-btn" type="button">Search</button>
+            </div>
+
+            <div class="date-container">
+                <div class="date-display" id="date-display"></div>
+                <div class="hijri-date" id="hijri-date"></div>
+            </div>
+
+            <div id="loading" class="loading">Loading Prayer Times</div>
+
+            <div class="prayer-grid" id="prayer-times">
+                <!-- Prayer times will be inserted here -->
+            </div>
+        </article>
+
+        <footer>
+            <p>
+                <br>
+                Prayer time data provided by <a href="https://aladhan.com/">AlAdhan API</a>
+                <br>
+                Location data from <a href="https://ipinfo.io">ipinfo.io</a>
+                <br><br>
+                Powered by <a href="https://web247.cc/">web247</a>
+            </p>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const locationDisplay = document.getElementById('location-display');
+            const cityInput = document.getElementById('city-input');
+            const countrySelect = document.getElementById('country-select');
+            const searchBtn = document.getElementById('search-btn');
+            const prayerTimesContainer = document.getElementById('prayer-times');
+            const loadingElement = document.getElementById('loading');
+            const dateDisplay = document.getElementById('date-display');
+            const hijriDateDisplay = document.getElementById('hijri-date');
+
+            let userCity = '';
+            let userCountry = '';
+
+            // Country codes map for dropdown selection
+            const countryCodes = {
+                // Middle Eastern Countries
+                'AE': 'Arab Emirates',
+                'BH': 'Bahrain',
+                'EG': 'Egypt',
+                'IQ': 'Iraq',
+                'IR': 'Iran',
+                'IL': 'Israel',
+                'JO': 'Jordan',
+                'KW': 'Kuwait',
+                'LB': 'Lebanon',
+                'OM': 'Oman',
+                'PS': 'Palestine',
+                'QA': 'Qatar',
+                'SA': 'Saudi Arabia',
+                'SY': 'Syria',
+                'TR': 'Turkey',
+                'YE': 'Yemen',
+
+                // South Asian Countries
+                'BD': 'Bangladesh',
+                'IN': 'India',
+                'ID': 'Indonesia',
+                'PK': 'Pakistan',
+
+                // Remaining Countries (Alphabetical Order)
+                'AF': 'Afghanistan',
+                'AL': 'Albania',
+                'DZ': 'Algeria',
+                'AD': 'Andorra',
+                'AO': 'Angola',
+                'AG': 'Antigua and Barbuda',
+                'AR': 'Argentina',
+                'AM': 'Armenia',
+                'AU': 'Australia',
+                'AT': 'Austria',
+                'AZ': 'Azerbaijan',
+                'BS': 'Bahamas',
+                'BB': 'Barbados',
+                'BY': 'Belarus',
+                'BE': 'Belgium',
+                'BZ': 'Belize',
+                'BJ': 'Benin',
+                'BT': 'Bhutan',
+                'BO': 'Bolivia',
+                'BA': 'Bosnia and Herzegovina',
+                'BW': 'Botswana',
+                'BR': 'Brazil',
+                'BN': 'Brunei',
+                'BG': 'Bulgaria',
+                'BF': 'Burkina Faso',
+                'BI': 'Burundi',
+                'KH': 'Cambodia',
+                'CM': 'Cameroon',
+                'CA': 'Canada',
+                'CV': 'Cape Verde',
+                'CF': 'Central African Republic',
+                'TD': 'Chad',
+                'CL': 'Chile',
+                'CN': 'China',
+                'CO': 'Colombia',
+                'KM': 'Comoros',
+                'CG': 'Congo (Brazzaville)',
+                'CD': 'Congo (Kinshasa)',
+                'CR': 'Costa Rica',
+                'CI': 'Côte d\'Ivoire',
+                'HR': 'Croatia',
+                'CU': 'Cuba',
+                'CY': 'Cyprus',
+                'CZ': 'Czech Republic',
+                'DK': 'Denmark',
+                'DJ': 'Djibouti',
+                'DM': 'Dominica',
+                'DO': 'Dominican Republic',
+                'EC': 'Ecuador',
+                'SV': 'El Salvador',
+                'GQ': 'Equatorial Guinea',
+                'ER': 'Eritrea',
+                'EE': 'Estonia',
+                'ET': 'Ethiopia',
+                'FJ': 'Fiji',
+                'FI': 'Finland',
+                'FR': 'France',
+                'GA': 'Gabon',
+                'GM': 'Gambia',
+                'GE': 'Georgia',
+                'DE': 'Germany',
+                'GH': 'Ghana',
+                'GR': 'Greece',
+                'GD': 'Grenada',
+                'GT': 'Guatemala',
+                'GN': 'Guinea',
+                'GW': 'Guinea-Bissau',
+                'GY': 'Guyana',
+                'HT': 'Haiti',
+                'HN': 'Honduras',
+                'HU': 'Hungary',
+                'IS': 'Iceland',
+                'IE': 'Ireland',
+                'IT': 'Italy',
+                'JM': 'Jamaica',
+                'JP': 'Japan',
+                'KZ': 'Kazakhstan',
+                'KE': 'Kenya',
+                'KI': 'Kiribati',
+                'KP': 'North Korea',
+                'KR': 'South Korea',
+                'KG': 'Kyrgyzstan',
+                'LA': 'Laos',
+                'LV': 'Latvia',
+                'LS': 'Lesotho',
+                'LR': 'Liberia',
+                'LY': 'Libya',
+                'LI': 'Liechtenstein',
+                'LT': 'Lithuania',
+                'LU': 'Luxembourg',
+                'MG': 'Madagascar',
+                'MW': 'Malawi',
+                'MY': 'Malaysia',
+                'MV': 'Maldives',
+                'ML': 'Mali',
+                'MT': 'Malta',
+                'MH': 'Marshall Islands',
+                'MR': 'Mauritania',
+                'MU': 'Mauritius',
+                'MX': 'Mexico',
+                'FM': 'Micronesia',
+                'MD': 'Moldova',
+                'MC': 'Monaco',
+                'MN': 'Mongolia',
+                'ME': 'Montenegro',
+                'MA': 'Morocco',
+                'MZ': 'Mozambique',
+                'MM': 'Myanmar (Burma)',
+                'NA': 'Namibia',
+                'NR': 'Nauru',
+                'NP': 'Nepal',
+                'NL': 'Netherlands',
+                'NZ': 'New Zealand',
+                'NI': 'Nicaragua',
+                'NE': 'Niger',
+                'NG': 'Nigeria',
+                'MK': 'North Macedonia',
+                'NO': 'Norway',
+                'OM': 'Oman',
+                'PA': 'Panama',
+                'PG': 'Papua New Guinea',
+                'PY': 'Paraguay',
+                'PE': 'Peru',
+                'PH': 'Philippines',
+                'PL': 'Poland',
+                'PT': 'Portugal',
+                'RO': 'Romania',
+                'RU': 'Russia',
+                'RW': 'Rwanda',
+                'WS': 'Samoa',
+                'SM': 'San Marino',
+                'ST': 'Sao Tome and Principe',
+                'SN': 'Senegal',
+                'RS': 'Serbia',
+                'SC': 'Seychelles',
+                'SL': 'Sierra Leone',
+                'SG': 'Singapore',
+                'SK': 'Slovakia',
+                'SI': 'Slovenia',
+                'SB': 'Solomon Islands',
+                'SO': 'Somalia',
+                'ZA': 'South Africa',
+                'SS': 'South Sudan',
+                'ES': 'Spain',
+                'LK': 'Sri Lanka',
+                'SD': 'Sudan',
+                'SR': 'Suriname',
+                'SE': 'Sweden',
+                'CH': 'Switzerland',
+                'TW': 'Taiwan',
+                'TJ': 'Tajikistan',
+                'TZ': 'Tanzania',
+                'TH': 'Thailand',
+                'TL': 'Timor-Leste',
+                'TG': 'Togo',
+                'TO': 'Tonga',
+                'TT': 'Trinidad and Tobago',
+                'TN': 'Tunisia',
+                'TM': 'Turkmenistan',
+                'TV': 'Tuvalu',
+                'UG': 'Uganda',
+                'UA': 'Ukraine',
+                'GB': 'United Kingdom',
+                'US': 'United States',
+                'UY': 'Uruguay',
+                'UZ': 'Uzbekistan',
+                'VU': 'Vanuatu',
+                'VA': 'Vatican City',
+                'VE': 'Venezuela',
+                'VN': 'Vietnam',
+                'EH': 'Western Sahara',
+                'YE': 'Yemen',
+                'ZM': 'Zambia',
+                'ZW': 'Zimbabwe'
+            };
+            
+            // Populate the select dropdown with country options
+            Object.keys(countryCodes).forEach(code => {
+                const option = document.createElement('option');
+                option.value = code;
+                option.textContent = countryCodes[code];
+                countrySelect.appendChild(option);
+            });
+
+            // Format date for API request (DD-MM-YYYY)
+            function getFormattedDate() {
+                const today = new Date();
+                const day = String(today.getDate()).padStart(2, '0');
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const year = today.getFullYear();
+                return `${day}-${month}-${year}`;
+            }
+
+            // Get location from IP
+            async function getLocationFromIP() {
+                try {
+                    const response = await fetch('https://ipinfo.io/json');
+                    const data = await response.json();
+
+                    userCity = data.city;
+                    userRegion = data.region;
+                    userCountry = data.country;
+
+                    // Set the select dropdown to match the detected country
+                    if (countryCodes[userCountry]) {
+                        cityInput.value = userCity;
+                        countrySelect.value = userCountry;
+                    }
+
+                    locationDisplay.textContent = `Location: ${userCity}, ${userRegion}, ${userCountry}`;
+
+                    // Get prayer times for detected location
+                    getPrayerTimes(userCity, userCountry);
+                } catch (error) {
+                    console.error('Error fetching location:', error);
+                    locationDisplay.textContent = 'Unable to detect location';
+                    loadingElement.textContent = 'Please enter a city and country to get prayer times.';
+                }
+            }
+
+            // Get prayer times from API
+            async function getPrayerTimes(city, country) {
+                try {
+                    loadingElement.style.display = 'block';
+                    prayerTimesContainer.innerHTML = '';
+
+                    const formattedDate = getFormattedDate();
+                    const apiUrl = `https://api.aladhan.com/v1/timingsByCity/${formattedDate}?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`;
+
+                    const response = await fetch(apiUrl);
+                    const data = await response.json();
+
+                    if (data.code === 200 && data.status === 'OK') {
+                        // Update date displays
+                        const gregorianDate = data.data.date.readable;
+                        const hijriDate = `${data.data.date.hijri.day} ${data.data.date.hijri.month.en} ${data.data.date.hijri.year} ${data.data.date.hijri.designation.abbreviated}`;
+
+                        dateDisplay.textContent = gregorianDate;
+                        hijriDateDisplay.textContent = hijriDate;
+
+                        // Get country name from country code if available
+                        const countryName = countryCodes[country] || country;
+
+                        // Update location display
+                        locationDisplay.textContent = `Location: ${city}, ${userRegion}, ${countryName}`;
+
+                        const timings = data.data.timings;
+
+                        // Prayer names and their corresponding keys in the API response
+                        const prayers = [
+                            { name: 'Fajr', key: 'Fajr' },
+                            { name: 'Sunrise', key: 'Sunrise' },
+                            { name: 'Dhuhr', key: 'Dhuhr' },
+                            { name: 'Asr', key: 'Asr' },
+                            { name: 'Maghrib', key: 'Maghrib' },
+                            { name: 'Isha', key: 'Isha' }
+                        ];
+
+                        // Create prayer time cards
+                        prayers.forEach(prayer => {
+                            const prayerCard = document.createElement('div');
+                            prayerCard.className = 'prayer-card';
+
+                            const prayerName = document.createElement('div');
+                            prayerName.className = 'prayer-name';
+                            prayerName.textContent = prayer.name;
+
+                            const prayerTime = document.createElement('div');
+                            prayerTime.className = 'prayer-time';
+                            prayerTime.textContent = timings[prayer.key];
+
+                            prayerCard.appendChild(prayerName);
+                            prayerCard.appendChild(prayerTime);
+
+                            prayerTimesContainer.appendChild(prayerCard);
+                        });
+
+                        loadingElement.style.display = 'none';
+                    } else {
+                        throw new Error('Unable to fetch prayer times');
+                    }
+                } catch (error) {
+                    console.error('Error fetching prayer times:', error);
+                    loadingElement.textContent = 'Error loading prayer times. Please try again.';
+                }
+            }
+
+            // Handle city search
+            searchBtn.addEventListener('click', function() {
+                const city = cityInput.value.trim();
+                const country = countrySelect.value;
+
+                if (city && country) {
+                    getPrayerTimes(city, country);
+                } else {
+                    alert('Please enter both city and country');
+                }
+            });
+
+            // Also trigger search on Enter key
+            cityInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchBtn.click();
+                }
+            });
+
+            // Initial load
+            getLocationFromIP();
+        });
+    </script>
+</body>
+</html>
