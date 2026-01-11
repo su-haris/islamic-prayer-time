@@ -1,228 +1,409 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script defer src="https://analytics.suh.ovh/script.js" data-website-id="f89a5f1c-00f8-4b56-9a3b-0d064ba64ba8"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Primary Meta Tags -->
-    <meta name="title" content="Islamic Prayer Times - Accurate Daily Salah Times">
-    <meta name="description" content="Get accurate daily Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) for your location. Simple, reliable and free prayer time calculator with Hijri date.">
-    <meta name="keywords" content="prayer times, salah times, namaz times, islamic prayer calculator, muslim prayers, fajr time, dhuhr time, asr time, maghrib time, isha time, hijri date">
-    <meta name="author" content="web247.cc">
-    <meta name="robots" content="index, follow">
-    <meta name="language" content="English">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://salah.web247.cc/">
-    <meta property="og:title" content="Islamic Prayer Times - Accurate Daily Salah Times">
-    <meta property="og:description" content="Get accurate daily Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) for your location with Hijri date conversion.">    
-
-    <title>Islamic Prayer Times</title>
-
-    <!-- Pico CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/picocss/1.5.10/pico.min.css">
+    <title>Prayer Times</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #3949ab;
-            --primary-hover: #303f9f;
-            --primary-focus: rgba(57, 73, 171, 0.125);
-            --primary-inverse: #FFF;
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Custom theming with Pico CSS */
+        :root {
+            --bg-cream: #faf8f5;
+            --bg-warm: #f5f1eb;
+            --text-dark: #1a1a1a;
+            --text-medium: #4a4a4a;
+            --text-light: #8a8a8a;
+            --accent: #c45d3a;
+            --accent-soft: rgba(196, 93, 58, 0.1);
+            --accent-hover: #a84d2e;
+            --card-bg: #ffffff;
+            --border-subtle: rgba(0, 0, 0, 0.06);
+            --shadow-soft: 0 2px 20px rgba(0, 0, 0, 0.04);
+            --shadow-medium: 0 8px 40px rgba(0, 0, 0, 0.08);
+        }
+
         [data-theme="dark"] {
-            --background-color: #1a222c;
-            --card-background-color: #21293b;
-            --color: #fff;
-            --card-sectionning-background-color: #fbfbfc;
-            --card-box-shadow: 0 0.125rem 1rem rgba(27, 40, 50, 0.04),
-                               0 0.125rem 2rem rgba(27, 40, 50, 0.08),
-                               0 0 0 0.0625rem rgba(27, 40, 50, 0.024);
+            --bg-cream: #121212;
+            --bg-warm: #1e1e1e;
+            --text-dark: #f0f0f0;
+            --text-medium: #c0c0c0;
+            --text-light: #888888;
+            --accent: #e07a5f;
+            --accent-soft: rgba(224, 122, 95, 0.15);
+            --accent-hover: #f09070;
+            --card-bg: #1a1a1a;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --shadow-soft: 0 2px 20px rgba(0, 0, 0, 0.2);
+            --shadow-medium: 0 8px 40px rgba(0, 0, 0, 0.4);
         }
 
         body {
-            padding: 0;
-            margin: 0;
-            background-color: #1a222c;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.85);
-            z-index: -1;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
-            padding: 1rem;
-            max-width: 1100px;
+            max-width: 900px;
             margin: 0 auto;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
+            padding: 3rem 1.5rem;
         }
 
+        /* Header */
         header {
-            padding: 1rem 0;
             text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
         }
 
         header h1 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 600;
+            color: var(--text-dark);
+            letter-spacing: -0.02em;
             margin-bottom: 0.5rem;
-            color: var(--primary);
         }
 
-        article {
-            margin: 0;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            background-color: var(--card-background-color);
-            box-shadow: var(--card-box-shadow);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .location-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .location-display {
-            padding: 0.5rem 1rem;
-            background-color: var(--card-sectionning-background-color);
-            border-radius: 0.5rem;
-            color: var(--primary);
+        .tagline {
+            font-size: 0.95rem;
+            color: var(--text-light);
             font-weight: 500;
-            text-align: center;
-            flex: 1;
-            margin: 0 auto;
         }
 
-        .location-form {
+        /* Theme Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--bg-warm);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .theme-toggle:hover {
+            background: var(--card-bg);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-medium);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            position: absolute;
+        }
+
+        .theme-toggle:hover svg {
+            transform: rotate(15deg);
+        }
+
+        .theme-toggle .sun-icon {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .theme-toggle .moon-icon {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        [data-theme="dark"] .theme-toggle .sun-icon {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        [data-theme="dark"] .theme-toggle .moon-icon {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Main Card */
+        .main-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-medium);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Location Display */
+        .location-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-warm);
+            padding: 0.75rem 1.25rem;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-medium);
+            margin-bottom: 2rem;
+        }
+
+        .location-badge svg {
+            width: 16px;
+            height: 16px;
+            color: var(--accent);
+        }
+
+        /* Form */
+        .search-form {
             display: flex;
             gap: 0.75rem;
-            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            flex: 1;
+            position: relative;
+        }
+
+        input, select {
             width: 100%;
+            padding: 1rem 1.25rem;
+            font-family: inherit;
+            font-size: 0.95rem;
+            background: var(--bg-cream);
+            border: 1.5px solid var(--border-subtle);
+            border-radius: 14px;
+            color: var(--text-dark);
+            transition: all 0.2s ease;
         }
 
-        .date-container {
+        input::placeholder {
+            color: var(--text-light);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--card-bg);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238a8a8a' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        select option {
+            background: var(--card-bg);
+            color: var(--text-dark);
+        }
+
+        button {
+            padding: 1rem 1.75rem;
+            background: var(--accent);
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Date Display */
+        .date-section {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .date-item {
             text-align: center;
-            margin: 1rem 0;
-            padding: 1rem;
-            background-color: var(--card-sectionning-background-color);
-            border-radius: 0.5rem;
         }
 
-        .hijri-date {
-            color: var(--primary);
-            margin-top: 0.5rem;
+        .date-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
+        }
+
+        .date-value {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .date-value.hijri {
+            color: var(--accent);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
             font-size: 0.9rem;
         }
 
-        .loading {
-            text-align: center;
-            margin: 1rem 0;
-            font-style: italic;
-            color: var(--muted-color);
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border-subtle);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            animation: spin 0.8s linear infinite;
         }
 
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Prayer Grid */
         .prayer-grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
-            margin-top: 1rem;
-            flex: 1;
         }
 
         .prayer-card {
-            padding: 1.5rem 1rem;
-            background-color: var(--card-sectionning-background-color);
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.5rem rgba(27, 40, 50, 0.04);
-            transition: all 0.2s ease;
+            background: var(--bg-warm);
+            border-radius: 16px;
+            padding: 1.5rem;
             text-align: center;
-            border-left: 4px solid var(--primary);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: default;
         }
 
         .prayer-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0.125rem 1rem rgba(27, 40, 50, 0.08);
+            background: var(--card-bg);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .prayer-icon {
+            width: 36px;
+            height: 36px;
+            margin: 0 auto 0.75rem;
+            background: var(--accent-soft);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .prayer-icon svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent);
         }
 
         .prayer-name {
-            font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-light);
             margin-bottom: 0.5rem;
-            color: var(--primary);
         }
 
         .prayer-time {
-            font-size: 1.5rem;
-            color: var(--color);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-dark);
         }
 
+        /* Footer */
         footer {
             text-align: center;
-            padding: 0.75rem 0;
-            opacity: 0.7;
-            font-size: 0.85rem;
+            padding: 2.5rem 1rem;
+            color: var(--text-light);
+            font-size: 0.8rem;
         }
 
-        /* Make form inputs more compact */
-        .location-form input,
-        .location-form select,
-        .location-form button {
-            margin: 0;
-            padding: 0.5rem 1rem;
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.2s ease;
         }
 
-        @media (max-width: 992px) {
-            .prayer-grid {
-                grid-template-columns: repeat(3, 1fr);
+        footer a:hover {
+            color: var(--accent-hover);
+        }
+
+        footer p {
+            line-height: 1.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
             }
-        }
 
-        @media (max-width: 576px) {
-            article {
-                padding: 1rem;
+            .main-card {
+                padding: 1.5rem;
+                border-radius: 20px;
             }
 
-            .location-container {
+            .search-form {
                 flex-direction: column;
-                align-items: flex-start;
             }
 
-            .location-form {
-                width: 100%;
+            .date-section {
+                flex-direction: column;
+                gap: 1rem;
             }
 
-            .location-form input,
-            .location-form select,
-            .location-form button {
-                width: 100%;
-            }
-            
             .prayer-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .prayer-card {
+                padding: 1.25rem 1rem;
+            }
+
+            .prayer-time {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -230,28 +411,64 @@
 <body>
     <main class="container">
         <header>
-            <h1>Islamic Prayer Times</h1>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+            <h1>Prayer Times</h1>
+            <p class="tagline">Daily Salah Schedule</p>
         </header>
 
-        <article>
-            <div class="location-container">
-                <div class="location-display" id="location-display">Detecting Your Location</div>
+        <article class="main-card">
+            <div style="text-align: center;">
+                <div class="location-badge" id="location-display">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span id="location-text">Detecting location...</span>
+                </div>
             </div>
             
-            <div class="location-form">
-                <input type="text" id="city-input" placeholder="Enter city" aria-label="City">
-                <select id="country-select" aria-label="Country">
-                    <option value="">Select country</option>
-                </select>
+            <div class="search-form">
+                <div class="input-group">
+                    <input type="text" id="city-input" placeholder="Enter city" aria-label="City">
+                </div>
+                <div class="input-group">
+                    <select id="country-select" aria-label="Country">
+                        <option value="">Select country</option>
+                    </select>
+                </div>
                 <button id="search-btn" type="button">Search</button>
             </div>
 
-            <div class="date-container">
-                <div class="date-display" id="date-display"></div>
-                <div class="hijri-date" id="hijri-date"></div>
+            <div class="date-section">
+                <div class="date-item">
+                    <div class="date-label">Gregorian</div>
+                    <div class="date-value" id="date-display">—</div>
+                </div>
+                <div class="date-item">
+                    <div class="date-label">Hijri</div>
+                    <div class="date-value hijri" id="hijri-date">—</div>
+                </div>
             </div>
 
-            <div id="loading" class="loading">Loading Prayer Times</div>
+            <div id="loading" class="loading">
+                <div class="loading-spinner"></div>
+                Loading prayer times...
+            </div>
 
             <div class="prayer-grid" id="prayer-times">
                 <!-- Prayer times will be inserted here -->
@@ -260,7 +477,6 @@
 
         <footer>
             <p>
-                <br>
                 Prayer time data provided by <a href="https://aladhan.com/">AlAdhan API</a>
                 <br>
                 Location data from <a href="https://ipinfo.io">ipinfo.io</a>
@@ -271,8 +487,16 @@
     </main>
 
     <script>
+        // Theme toggle - run immediately to prevent flash
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+
         document.addEventListener('DOMContentLoaded', function() {
-            const locationDisplay = document.getElementById('location-display');
+            const locationText = document.getElementById('location-text');
             const cityInput = document.getElementById('city-input');
             const countrySelect = document.getElementById('country-select');
             const searchBtn = document.getElementById('search-btn');
@@ -280,9 +504,33 @@
             const loadingElement = document.getElementById('loading');
             const dateDisplay = document.getElementById('date-display');
             const hijriDateDisplay = document.getElementById('hijri-date');
+            const themeToggle = document.getElementById('theme-toggle');
 
             let userCity = '';
             let userCountry = '';
+            let userRegion = '';
+
+            // Theme toggle functionality
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                if (currentTheme === 'dark') {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+
+            // Prayer icons SVG
+            const prayerIcons = {
+                'Fajr': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/><circle cx="12" cy="12" r="4"/></svg>',
+                'Sunrise': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/></svg>',
+                'Dhuhr': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+                'Asr': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
+                'Maghrib': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="16 5 12 9 8 5"/></svg>',
+                'Isha': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+            };
 
             // Country codes map for dropdown selection
             const countryCodes = {
@@ -429,7 +677,6 @@
                 'NG': 'Nigeria',
                 'MK': 'North Macedonia',
                 'NO': 'Norway',
-                'OM': 'Oman',
                 'PA': 'Panama',
                 'PG': 'Papua New Guinea',
                 'PY': 'Paraguay',
@@ -482,7 +729,6 @@
                 'VE': 'Venezuela',
                 'VN': 'Vietnam',
                 'EH': 'Western Sahara',
-                'YE': 'Yemen',
                 'ZM': 'Zambia',
                 'ZW': 'Zimbabwe'
             };
@@ -520,14 +766,14 @@
                         countrySelect.value = userCountry;
                     }
 
-                    locationDisplay.textContent = `Location: ${userCity}, ${userRegion}, ${userCountry}`;
+                    locationText.textContent = `${userCity}, ${userRegion}, ${userCountry}`;
 
                     // Get prayer times for detected location
                     getPrayerTimes(userCity, userCountry);
                 } catch (error) {
                     console.error('Error fetching location:', error);
-                    locationDisplay.textContent = 'Unable to detect location';
-                    loadingElement.textContent = 'Please enter a city and country to get prayer times.';
+                    locationText.textContent = 'Unable to detect location';
+                    loadingElement.innerHTML = 'Please enter a city and country to get prayer times.';
                 }
             }
 
@@ -535,6 +781,7 @@
             async function getPrayerTimes(city, country) {
                 try {
                     loadingElement.style.display = 'block';
+                    loadingElement.innerHTML = '<div class="loading-spinner"></div>Loading prayer times...';
                     prayerTimesContainer.innerHTML = '';
 
                     const formattedDate = getFormattedDate();
@@ -546,7 +793,7 @@
                     if (data.code === 200 && data.status === 'OK') {
                         // Update date displays
                         const gregorianDate = data.data.date.readable;
-                        const hijriDate = `${data.data.date.hijri.day} ${data.data.date.hijri.month.en} ${data.data.date.hijri.year} ${data.data.date.hijri.designation.abbreviated}`;
+                        const hijriDate = `${data.data.date.hijri.day} ${data.data.date.hijri.month.en} ${data.data.date.hijri.year}`;
 
                         dateDisplay.textContent = gregorianDate;
                         hijriDateDisplay.textContent = hijriDate;
@@ -554,8 +801,9 @@
                         // Get country name from country code if available
                         const countryName = countryCodes[country] || country;
 
-                        // Update location display
-                        locationDisplay.textContent = `Location: ${city}, ${userRegion}, ${countryName}`;
+                        // Update location display (only show region if available)
+                        const locationParts = [city, userRegion, countryName].filter(part => part);
+                        locationText.textContent = locationParts.join(', ');
 
                         const timings = data.data.timings;
 
@@ -570,9 +818,14 @@
                         ];
 
                         // Create prayer time cards
-                        prayers.forEach(prayer => {
+                        prayers.forEach((prayer, index) => {
                             const prayerCard = document.createElement('div');
                             prayerCard.className = 'prayer-card';
+                            prayerCard.style.animationDelay = `${index * 0.05}s`;
+
+                            const iconDiv = document.createElement('div');
+                            iconDiv.className = 'prayer-icon';
+                            iconDiv.innerHTML = prayerIcons[prayer.key];
 
                             const prayerName = document.createElement('div');
                             prayerName.className = 'prayer-name';
@@ -582,6 +835,7 @@
                             prayerTime.className = 'prayer-time';
                             prayerTime.textContent = timings[prayer.key];
 
+                            prayerCard.appendChild(iconDiv);
                             prayerCard.appendChild(prayerName);
                             prayerCard.appendChild(prayerTime);
 
@@ -594,7 +848,7 @@
                     }
                 } catch (error) {
                     console.error('Error fetching prayer times:', error);
-                    loadingElement.textContent = 'Error loading prayer times. Please try again.';
+                    loadingElement.innerHTML = 'Error loading prayer times. Please try again.';
                 }
             }
 
@@ -604,6 +858,8 @@
                 const country = countrySelect.value;
 
                 if (city && country) {
+                    // Reset userRegion since manual search doesn't have region info
+                    userRegion = '';
                     getPrayerTimes(city, country);
                 } else {
                     alert('Please enter both city and country');
